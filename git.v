@@ -191,3 +191,18 @@ pub fn (g Git)push_to(remote string, branch string) {
 pub fn (g Git)push_with_options(remote string, branch string, options string) {
 	g.execute(['push', remote, branch, options])
 }
+
+
+// Manage set of tracked repositories
+pub fn (g Git)remote_add(name string, repository string) {
+	g.execute(['remote', 'add', name, repository])
+}
+pub fn (g Git)remote_add_with_options(name string, repository string, options []string) {
+	g.execute(concat_(['remote', 'add', name, repository], options))
+}
+
+pub fn (g Git)remote_remove(name string) {
+	g.execute(['remote', 'remove', name])
+}
+
+// TODO Others remote
