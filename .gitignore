@@ -1,0 +1,5 @@
+main
+v.git
+*.so
+*.dylib
+*.dll
