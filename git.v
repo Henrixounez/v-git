@@ -188,6 +188,9 @@ pub fn (g Git)push() {
 pub fn (g Git)push_to(remote string, branch string) {
 	g.execute(['push', remote, branch])
 }
+pub fn (g Git)push_set_upstream(remote string, branch string) {
+	g.execute(['push', '--set-upstream', remote, branch])
+}
 pub fn (g Git)push_with_options(remote string, branch string, options string) {
 	g.execute(['push', remote, branch, options])
 }
