@@ -62,16 +62,14 @@ pub fn (g Git)clone_with_options(repository string, dir string, options string) 
 }
 
 // Create an empty Git repository or reinitialize an existing one
-pub fn (g Git)init(bare bool) {
-	g.init_with_options(bare, '')
+pub fn (g Git)init() {
+	g.init_with_options('')
 }
-pub fn (g Git)init_with_options(bare bool, options string) {
-	mut cmd := ['init']
-	if bare {
-		cmd << '--bare'
-	}
-	cmd << options
-	g.execute(cmd)
+pub fn (g Git)init_bare() {
+	g.init_with_options('--bare')
+}
+pub fn (g Git)init_with_options(options string) {
+	g.execute(['init', options])
 }
 
 ////////
@@ -129,8 +127,8 @@ pub fn (g Git)status() {
 ////////
 
 // List, create, or delete branches
-pub fn (g Git)branch(options []string) {
-	g.execute(prepend_('branch', options))
+pub fn (g Git)branch(options string) {
+	g.execute(['branch', options])
 	// TODO List branches
 }
 pub fn (g Git)branch_delete(branch string) {
@@ -138,7 +136,7 @@ pub fn (g Git)branch_delete(branch string) {
 }
 
 // Record changes to the repository
-pub fn (g Git)commit(message string/* options ?*/) {
+pub fn (g Git)commit(message string) {
 	g.execute(['commit', '-m', '"$message"'])
 }
 pub fn (g Git)commit_with_files(message string, files []string) {
@@ -200,8 +198,8 @@ pub fn (g Git)push_with_options(remote string, branch string, options string) {
 pub fn (g Git)remote_add(name string, repository string) {
 	g.execute(['remote', 'add', name, repository])
 }
-pub fn (g Git)remote_add_with_options(name string, repository string, options []string) {
-	g.execute(concat_(['remote', 'add', name, repository], options))
+pub fn (g Git)remote_add_with_options(name string, repository string, options string) {
+	g.execute(['remote', 'add', name, repository, options])
 }
 
 pub fn (g Git)remote_remove(name string) {
