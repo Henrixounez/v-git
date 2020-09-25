@@ -119,9 +119,95 @@ pub fn (g Git)show() {
 
 }
 
-// Show the working tree status
-pub fn (g Git)status() {
+struct StatusRenamed {
+	from string
+	to string
+}
+struct StatusResult {
+	pub mut:
+		untracked []string
+		ignored []string
+		modified []string
+		added []string
+		deleted []string
+		renamed []StatusRenamed
+		conflicted []string
 
+		staged []string
+
+		ahead int
+		behind int
+
+		current string
+		tracking string
+}
+
+// Show the working tree status
+pub fn (g Git)status() ?StatusResult {
+	output := g.execute(['status', '--porcelain', '-b', '-u']) or {
+		return none
+	}
+	mut result := StatusResult{}
+	lines := output.split_into_lines()
+	for line_ in lines {
+		line := line_.trim(' ')
+		splitted := line.split(' ').filter(it != '')
+		match splitted[0] {
+			'##' {
+				if splitted.index('...') != -1 {
+					branch := splitted[1].split('...')
+					result.current = branch[0]
+					result.tracking = branch[1]
+					if splitted.len >= 4 {
+						shift := splitted[2].all_after('[')
+						nb := splitted[3].int()
+						if shift == 'behind' {
+							result.behind = nb
+						} else if shift == 'ahead' {
+							result.ahead = nb
+						}
+					}
+				}
+			}
+			'??' {
+				result.untracked << splitted[1]
+			}
+			'!!' {
+				result.ignored << splitted[1]
+			}
+			'M', 'MM' {
+				result.modified << splitted[1]
+				if line_[0] == `M` {
+					result.staged << splitted[1]
+				}
+			}
+			'A' {
+				result.added << splitted[1]
+				if line_[0] == `A` {
+					result.staged << splitted[1]
+				}
+			}
+			'AM' {
+				result.added << splitted[1]
+			}
+			'D' {
+				result.deleted << splitted[1]
+				if line_[0] == `D` {
+					result.staged << splitted[1]
+				}
+			}
+			'R' {
+				result.renamed << StatusRenamed{splitted[2], splitted[4]}
+				result.staged << splitted[4]
+			}
+			'UU', 'AA', 'UD', 'DU', 'DD', 'AU', 'UA' {
+				result.conflicted << splitted[1]
+			}
+
+			else {}
+		}
+	}
+	return result
 }
 
 ////////

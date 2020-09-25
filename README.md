@@ -1,7 +1,9 @@
 # V-Git
 ## V Interface for Git
 
-### Clone
+![logo](./.github/v-git.png)
+
+### Methods of Git
 | Method | use |
 |-|-|
 |`.clone(repository string)`| Clones a `repository` in current folder |
@@ -20,7 +22,7 @@
 |`.diff()`| *Not yet implemented* |
 |`.log()`| *Not yet implemented* |
 |`.show()`| *Not yet implemented* |
-|`.status()`| *Not yet implemented* |
+|`.status() ?StatusResult`| Gives status of repository |
 |`.branch(options string)`| Use branch command with `options` |
 |`.branch_delete(branch string)`| Delete a `branch` |
 |`.commit(message string)`| Commit a change with a `message` |
@@ -37,3 +39,28 @@
 |`.remote_add(name string, repository string)`| Adds a new remote named `name` from a remote `repository` |
 |`.remote_add_with_options(name string, repository string, options string)` | Adds a new remote named `name` from a remote `repository` with additional `options` |
 |`.remote_remove(name string)`| Removes a named `name` remote |
+
+<br/>
+
+### Types
+
+```
+struct StatusResult {
+	pub mut:
+		untracked []string
+		ignored []string
+		modified []string
+		added []string
+		deleted []string
+		renamed []StatusRenamed
+		conflicted []string
+
+		staged []string
+
+		ahead int
+		behind int
+
+		current string
+		tracking string
+}
+```
