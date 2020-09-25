@@ -1,9 +1,8 @@
-# V-Git
-## V Interface for Git
+# **V-Git**: V Interface for Git
 
 ![logo](./.github/v-git.png)
 
-### Methods of Git
+### Methods
 | Method | use |
 |-|-|
 |`.clone(repository string)`| Clones a `repository` in current folder |
